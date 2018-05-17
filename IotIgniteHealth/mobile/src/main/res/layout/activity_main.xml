@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--IoTIgnite bağlantı durumu -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/textConnection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:layout_marginRight="5dp"
+                android:layout_span="2"
+                android:text="Disconnected"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <ImageView
+                android:id="@+id/imageViewConnection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:src="@drawable/disconnected" />
+
+        </TableRow>
+
+        <!--Heart Rate sensörü -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Heart Rate Sensor"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+
+        <View
+            android:layout_height="1dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:background="@color/colorLightGrey" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorLightGrey">
+
+            <TextView
+                android:id="@+id/heartRateSensorValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="80"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/heartRateSensor"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_weight="1" />
+        </TableRow>
+
+
+
+
+
+    </TableLayout>
+
+</LinearLayout>

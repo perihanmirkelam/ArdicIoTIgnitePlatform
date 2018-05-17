@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mas.iotignitehealth">
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+       <!--ListenerService servisini manifeste aşağıdaki gibi ekleyiniz. -->
+        <service android:name=".ListenerService">
+            <intent-filter>
+
+                <!--Bu servis Data Layer da meydana gelen  DATA_CHANGED olaylarına duyarlı olacaktır.-->
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+
+                <!--Saat ve telefon arasındaki veri transferinde wearable_data path bilgisini kullanacağız.-->
+                <data
+                    android:host="*"
+                    android:path="/wearable_data"
+                    android:scheme="wear" />
+            </intent-filter>
+        </service>
+
+
+    </application>
+
+</manifest>
