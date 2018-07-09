@@ -60,7 +60,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
 
     /*Thing bileşenlerden veri okumayaı sağlayan bir görev tanımladık.
     Hashtable: Bu sınıf, key-value çiftlerinden oluşan bir karma tablo oluşturmayı sağlar.*/
-    private Hashtable<String, ScheduledFuture<?>> tasks = new Hashtable<String, ScheduledFuture<?>>();
+    private Hashtable<String, ScheduledFuture<?>> tasks = new Hashtable<>();
 
     /*IotIgniteManager: IoTIgnite pltaformuna bağlanmayı sağlayan temel sınıftır.*/
     private static IotIgniteManager mIotIgniteManager;
@@ -77,7 +77,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
     /*ThingDataHandler: Thing verilerini Ignite ortamına göndermeyi sağlayan iş parçacığı.*/
     private ThingDataHandler mThingDataHandler;
 
-    /*IoTIgnite ortamına bağlantı durumunu tutan bir değişken tanımladık*/
+    /*IoT-Ignite ortamına bağlantı durumunu tutan bir değişken tanımladık*/
     private boolean igniteConnected = false;
 
     /*Bağlantı işlemini kontrol etmek için oluşturulan görevin bekleme süresi*/
@@ -93,8 +93,8 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
     private Activity activity;
 
     /********KURUCU METODUMUZ********/
-    public VirtualCustomerNodeHandler(Activity activity, Context ctx) {
-        this.ctx = ctx;
+    public VirtualCustomerNodeHandler(Activity activity) {
+        this.ctx = activity.getApplicationContext();
         this.activity = activity;
     }
 
@@ -108,14 +108,14 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
         public void run() {
             /*IoTIgnite platformuna bağlantı yoksa bağlantı işlemi yapılmaya çalışılır.*/
             if(!igniteConnected) {
-                Log.i(TAG, "Ignite'ye bağlanılıyor...");
+                Log.i(TAG, "Ignite bağlantısı kuruluyor...");
                 /*start metodu ile bağlantı sağlanır.*/
                 start();
             }
         }
     }
 
-    /*Ignite platformunu bağlanmayı sağlayan metodumuz.*/
+    /*Ignite platformuna bağlanmayı sağlayan metodumuz.*/
     public void start() {
 
         try {
@@ -158,7 +158,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
         if (igniteConnected) {
             /*Ignite ile bağlantı kesildiği zaman Node ve Thing bileşenleri
             çevrimdışı yapmak için setConnected() metodunu kullanırız.
-            Bu metot bağlantı durumunu ayarlamayı sağlar. Metodunu ikinci
+            Bu metot bağlantı durumunu ayarlamayı sağlar. Metodun ikinci
             parametresine istediğiniz değeri verebilirsiniz.*/
             mLampThing.setConnected(false, "Application Destroyed");
             mTempThing.setConnected(false, "Application Destroyed");
@@ -229,7 +229,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
     }
 
     /********THING OLUŞTURMA VE IGNITE PLATFORMUNA KAYIT ETMEK********/
-    /*initIgniteVariables(): Bu metot ile Node ve Thing oluşturulup ignite platformuna kayıt edilir.*/
+    /*initIgniteVariables(): Bu metot ile Node ve Thing oluşturulup Ignite platformuna kayıt edilir.*/
     private void initIgniteVariables() {
         /*ThingType: Sensörün türünü belirtir. Sensör tipi ve üretici hakkında bilgi depolamayı sağlar.
         Bu sınıfın kurucu metodu için üç parametre alır:
@@ -243,28 +243,27 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
         createNode() Bu metot oluşturulacak Node'un bilgilerini tanımlamayı sağlar.
         Parametre olarak şu bilgileri kullanır.
         NODE_ID: Node için benzersiz bir ID bilgisi.
-        NODE_ID: Node için label etiket tanımlar. Benzersiz olmak zorunda değil.
         NODE_TYPE: Desteklenen Node türlerini tanımlar. GENERIC, RASPBERRY_PI ve ARDUINO_YUN parametrelerini alabilir.
         Burada genel amaçlı sanal bir sensör tanımladığımız için NodeType.GENERIC parametresini kullandık.
         4.Parametreye bu gibi durumlarda null verilir.
         NodeListener: Kayıt işlemini dinlemek için tanımlanır.*/
-        mNode = IotIgniteManager.NodeFactory.createNode(Constants.NODE_NAME,
-                                                        Constants.NODE_NAME,
+        mNode = IotIgniteManager.NodeFactory.createNode(Constants.NODE_ID,
+                                                        Constants.NODE_ID,
                                                         NodeType.GENERIC,
                                                         null,
                                                         new NodeListener() {
             @Override
             public void onNodeUnregistered(String s) {
-                Log.i(TAG, Constants.NODE_NAME + " kayıt edilmedi!!");
+                Log.i(TAG, Constants.NODE_ID + " kayıt edilmedi!!");
             }
         });
 
         /*Node kayıtlı değilse kayıt edilir ve bağlantı sağlanır.*/
         if (!mNode.isRegistered() && mNode.register()) {
-            mNode.setConnected(true, Constants.NODE_NAME + " online");
+            mNode.setConnected(true, Constants.NODE_ID + " online");
             Log.i(TAG, mNode.getNodeID() + " kayıt edildi!");
         } else {
-            mNode.setConnected(true, Constants.NODE_NAME + " online");
+            mNode.setConnected(true, Constants.NODE_ID + " online");
             Log.i(TAG, mNode.getNodeID() + " zaten kayıtlı!");
         }
 
@@ -332,7 +331,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
         }
     };
 
-    /*Tanımladığımız lamba akturatörünü dinlemek için ThingListener tanımladık.
+    /*Tanımladığımız lamba aktüatörünü dinlemek için ThingListener tanımladık.
     Bu olay dinleyicide 3 metot bulunmaktadır. Konfigürasyon ve action message verileri
     buradan alınır.*/
     private ThingListener lampThingListener = new ThingListener() {
@@ -398,7 +397,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
         if (!t.isRegistered() && t.register()) {
             /*Ignite ile bağlantı kesildiği zaman Node ve Thing bileşenleri
             çevrimdışı yapmak için setConnected() metodunu kullanırız.
-            Bu metot bağlantı durumunu ayarlamayı sağlar. Metodunu ikinci
+            Bu metot bağlantı durumunu ayarlamayı sağlar. Metodun ikinci
             parametresine istediğiniz değeri verebilirsiniz.*/
             t.setConnected(true, t.getThingID() + " bağlandı");
             Log.i(TAG, t.getThingID() + " kayıt edildi!");
@@ -487,7 +486,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
                 mThingData.addData(toggleLamp.isChecked() ? 1 : 0);
             }
 
-            /*ThingData nesnesinde bulunan veri IoTIgnite ortamına gönderilir.*/
+            /*ThingData nesnesinde bulunan veri IoT-Ignite ortamına gönderilir.*/
             if(mThing.sendData(mThingData)){
                 Log.i(TAG, "VERİ GÖNDERİMİ BAŞARILI : " + mThingData);
             }else{
@@ -520,7 +519,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
 
     /********SENSÖR VERİLERİNİ IGNITE ORTAMINA GÖNDERMEK********/
     /*Ignite ortamına bağlantı sağlandığı zaman aşağıdaki metot çağrılır.
-    Burada sensör ve actuator için ilk değer ataması gerçekleşir. */
+    Burada sensör ve aktüatör için ilk değer ataması gerçekleşir. */
     private void sendInitialData() {
         /*sendData(): Bu metot ID bilgisi verilen Thing bileşenlere değer atamak için kullanılır.*/
         sendData(Constants.TEMP_NAME, Constants.FIRST_VALUE_FOR_TEMP);
@@ -528,7 +527,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
     }
 
     /*Ignite ortamına veri göndermeyi sağlar. Bu işlemin yapılabilmesi için getDataReadingFrequency()
-    metodu READING_WHEN_ARRIVE değerine sahip olamlıdır.*/
+    metodu READING_WHEN_ARRIVE değerine sahip olmalıdır.*/
     public void sendData(String thingId, int value) {
 
         /*Ignite bağlantısı varsa*/
@@ -536,7 +535,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
             try {
 
                 /*Node ID bilgisi Ignite ortamından alınır.*/
-                Node mNode = mIotIgniteManager.getNodeByID(Constants.NODE_NAME);
+                Node mNode = mIotIgniteManager.getNodeByID(Constants.NODE_ID);
 
                 /*Node null değilse işlem yapılır.*/
                 if(mNode != null) {
@@ -547,7 +546,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
                     /*Thing null değilse işlem yapılır.*/
                     if (mThing != null) {
 
-                        /*ThingData: IoTIgnite ortamına Thing verilerini göndermek için kullanılır.
+                        /*ThingData: IoT-Ignite ortamına Thing verilerini göndermek için kullanılır.
                         Her Thing nesnesi veri göndermek veya aktüatörler gibi eylem mesajı almak
                         için bir ThingData nesnesine ihtiyaç duyar.*/
                         ThingData mthingData = new ThingData();
@@ -566,7 +565,7 @@ public class VirtualCustomerNodeHandler implements ConnectionCallback {
                         Log.i(TAG, thingId + " kayıtlı değil!");
                     }
                 } else {
-                    Log.i(TAG, Constants.NODE_NAME + " zaten kayıtlı!");
+                    Log.i(TAG, Constants.NODE_ID + " kayıtlı değil!");
                 }
             } catch (AuthenticationException e) {
                 Log.i(TAG, "AuthenticationException!");

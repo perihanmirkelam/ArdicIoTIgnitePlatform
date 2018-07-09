@@ -12,7 +12,7 @@ public class Constants {
     public static final String VENDOR_INFO = "Basic Customer App";
 
     /*Sanal node ismi*/
-    public static final String NODE_NAME = "VirtualCustomerNode1";
+    public static final String NODE_ID = "VirtualCustomerNode1";
 
     /*Sanal sensör ismi*/
     public static final String TEMP_NAME = "Temperature";

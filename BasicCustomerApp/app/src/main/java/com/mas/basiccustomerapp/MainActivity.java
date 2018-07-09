@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar seekBarTemperature;
     private ImageView imageLamp;
     private ToggleButton toggleLamp;
+    private String centigrade = " \u00b0 C";
 
     /*VirtualCustomerNodeHandler bu sınıf özetle
     IOTIGNITE PLATFORMUNA BAĞLANTI,
@@ -30,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Parametre olarak MainActivity etkinliğini ve uygulama Context'ini gönderdik.*/
-        customerNodeHandler = new VirtualCustomerNodeHandler(this, getApplicationContext());
+        /*Parametre olarak MainActivity activitysini gönderdik.*/
+        customerNodeHandler = new VirtualCustomerNodeHandler(this);
 
-        /*start metodu ile ıgnite platformuna bağlantı sağlanır.*/
+        /*start metodu ile IoT-Ignite platformuna bağlantı sağlanır.*/
         customerNodeHandler.start();
 
         /*Arayüz için bu metot çağrılır.*/
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*Kontrollere ilk değerler atanır. Sıcaklık 21, lamba ise yanık olur.*/
         seekBarTemperature.setProgress(Constants.FIRST_VALUE_FOR_TEMP);
-        temperatureValue.setText(String.valueOf(Constants.FIRST_VALUE_FOR_TEMP) +  " \u00b0 C");
+        temperatureValue.setText(String.format("%d" + centigrade, Constants.FIRST_VALUE_FOR_TEMP));
 
         /*sıcaklık 0 ile 100 arasında üretilir.*/
         seekBarTemperature.setMax(100);
@@ -59,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                /*Yeni değer kullanıcının okuyabilmesi için textview kontrolüe yazılır.*/
-                temperatureValue.setText(String.valueOf(i) +  " \u00b0 C");
+                /*Yeni değer kullanıcının okuyabilmesi için textview kontrolüne yazılır.*/
+                temperatureValue.setText(String.format("%d" + centigrade,i));
             }
 
             @Override
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 customerNodeHandler.sendData(Constants.TEMP_NAME, seekBar.getProgress());
             }
         });
-
 
         /*Lamba için kontrol erişimi*/
         imageLamp = findViewById(R.id.imageLamp);
@@ -111,6 +111,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         /*Uygulama sonlandığı zaman Ignite bağlantısı kesilir.*/
         customerNodeHandler.stop();
-
     }
 }
