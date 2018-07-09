@@ -20,11 +20,11 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 
-/*GoogleApiClient.ConnectionCallbacks arayüzünü etkinliğe uyguladıktan sonra,
+/*GoogleApiClient.ConnectionCallbacks arayüzünü activityye uyguladıktan sonra,
 onConnected() ve onConnectionSuspended() metotlarını eklemeliyiz.
-GoogleApiClient.OnConnectionFailedListener arayüzünü etkinliğe uyguladıktan sonra,
+GoogleApiClient.OnConnectionFailedListener arayüzünü activityye uyguladıktan sonra,
 onConnectionFailed() metodunu eklemeliyiz.*/
-public class MainActivity extends WearableActivity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks,
+public class DataSendActivity extends WearableActivity implements SensorEventListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     /*Değişkenlerimiz*/
@@ -56,8 +56,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Bu sınıf içerisinde çeşitli statik metotlar bulunmaktadır.
         Amacımız, sadece Wearable.API servisine erişmektir. Bu servisi kullanarak
         iki cihaz arasında veri senkronizasyonu işlemini yapacağız.
-        Etinliğe eklediğimiz, onConnected(), onConnectionSuspended() ve
-        onConnectionFailed() metotlarını bu istemci ile ilşkilendşrmek için
+        Activityye eklediğimiz, onConnected(), onConnectionSuspended() ve
+        onConnectionFailed() metotlarını bu istemci ile ilşkilendirmek için
         .addConnectionCallbacks(this)
         .addOnConnectionFailedListener(this)
         verilen metotları kesinlikle istemci ile ilişkilendirmeliyiz.
@@ -99,14 +99,13 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         }
     }
 
-
     /*onConnected(): connect() metodundan sonra, bağlanma isteği
     başarıyla tamamlandığında bu yöntem asenkron olarak çağrılır.*/
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
         /*DataMap: Öncelikle DataMap yapısını oluşturmalıyız. Bu yapı
-        içerisine, akıllı saate göndermek istediğimiz değerleri eklemeliyiz.*/
+        içerisine, google clienta/akıllı telefona göndermek istediğimiz değerleri eklemeliyiz.*/
         DataMap dataMap = new DataMap();
 
         /*DataMap sınıfı yapı olarak Bundle sınıfında benzer. Veriler
@@ -143,9 +142,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         senkronize edilir. Yani cihazın o an bağlı olma şartı yoktur.
         Bağlantı kurulduğunda veri otomatik olarak akıllı saate iletilir.*/
         Wearable.DataApi.putDataItem(googleClient, request);
-
     }
-
 
     /*onConnectionSuspended(): İstemci bağlantısı geçici olarak kesildiği
     durumlarda bu metot çağrılır*/
@@ -164,7 +161,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     @Override
     protected void onPause() {
         super.onPause();
-        /*Kullanıcı etkinlikte ayrıldığında, eğer istemci bulunuyorsa ve bu istemci aktif ise
+        /*Kullanıcı activityden ayrıldığında, eğer istemci bulunuyorsa ve bu istemci aktif ise
         istemci sonlandırılır.*/
         if (googleClient != null && googleClient.isConnected()) {
             googleClient.disconnect();

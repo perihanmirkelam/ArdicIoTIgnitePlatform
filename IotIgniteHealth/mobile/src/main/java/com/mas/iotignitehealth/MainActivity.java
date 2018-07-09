@@ -2,10 +2,9 @@ package com.mas.iotignitehealth;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,29 +27,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*Parametre olarak MainActivity activitysini gönderdik.*/
+        humanNodeHandler = new VirtualHumanNodeHandler(this);
 
-        /*Parametre olarak MainActivity etkinliğini ve uygulama Context'ini gönderdik.*/
-        humanNodeHandler = new VirtualHumanNodeHandler(this, getApplicationContext());
-
-        /*start metodu ile ıgnite platformuna bağlantı sağlanır.*/
+        /*start metodu ile IoT-Ignite platformuna bağlantı sağlanır.*/
         humanNodeHandler.start();
         getControlView();
 
-        /*getBundleExtra(): Bundel olarak gönderilen veri alınır. Bunun için serviste
+        /*getBundleExtra(): Bundle olarak gönderilen veri alınır. Bunun için serviste
         tanımladığımız key bilgisini kullanırız.*/
         Bundle data = getIntent().getBundleExtra("data");
         if (data != null) {
-            /*Gelen metin değişkene atanır. Metne erişmek için Akıllı telefon için
-            yazdığımız DataSendActivity isimli etkinlikte tanımladığımı key bilgisini
+            /*Gelen metin değişkene atanır. Metne erişmek için Akıllı saat için
+            yazdığımız DataSendActivity isimli activityde tanımladığımız key bilgisini
             kullanırız.*/
             heartRateSensor.setProgress(Integer.parseInt(data.getString("rate")));
-            heartRateSensorValue.setText(data.getString("rate") + "");
+            heartRateSensorValue.setText(data.getString("rate"));
 
         }
         /*Arayüz için bu metot çağrılır.*/
         initUIComponents();
-
-
     }
 
     public void getControlView() {
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*Kontrollere ilk değerler atanır. Heart Rate 80 olur*/
         heartRateSensor.setProgress(Constants.FIRST_VALUE_FOR_HEART_RATE);
-        heartRateSensorValue.setText(String.valueOf(Constants.FIRST_VALUE_FOR_HEART_RATE) + "");
+        heartRateSensorValue.setText(String.format(Locale.getDefault(), "%d", Constants.FIRST_VALUE_FOR_HEART_RATE));
 
         /*rate 0 ile 250 arasında üretilir.*/
         heartRateSensor.setMax(250);
@@ -69,15 +65,13 @@ public class MainActivity extends AppCompatActivity {
     /*MainActivity arayüzünde bulunan kontrollere erişim sağlanır.*/
     private void initUIComponents() {
 
-
-
         /*Heart Rate değeri değiştiğinde algılamayı sağlayan bir listener eklenir.*/
         heartRateSensor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 /*Yeni değer, kullanıcının okuyabilmesi için textview kontrolüe yazılır.*/
-                heartRateSensorValue.setText(String.valueOf(i) + "");
+                heartRateSensorValue.setText(String.format(Locale.getDefault(), "%d", i));
             }
 
             @Override
@@ -92,12 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 humanNodeHandler.sendData(Constants.HEART_RATE_SENSOR, seekBar.getProgress());
             }
         });
-
-
-
-
-
-
     }
 
     @Override
@@ -105,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         /*Uygulama sonlandığı zaman Ignite bağlantısı kesilir.*/
         humanNodeHandler.stop();
-
     }
 
 }

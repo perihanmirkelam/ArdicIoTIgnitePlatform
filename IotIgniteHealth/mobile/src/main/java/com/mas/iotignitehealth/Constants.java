@@ -5,14 +5,13 @@ public class Constants {
 
     /*Kurucu metodumuz*/
     private Constants() {
-
     }
 
     /*Sanal sensörler için VENDOR_INFO bilgisi*/
     public static final String VENDOR_INFO = "Health App";
 
     /*Sanal node ismi*/
-    public static final String NODE_NAME = "HumanNode";
+    public static final String NODE_ID = "HumanNode";
 
     /*Sanal sensör ismi*/
     public static final String HEART_RATE_SENSOR = "HeartRateSensor";

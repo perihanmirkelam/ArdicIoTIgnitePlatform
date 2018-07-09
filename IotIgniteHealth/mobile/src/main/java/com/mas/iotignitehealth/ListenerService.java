@@ -19,18 +19,18 @@ public class ListenerService extends WearableListenerService {
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
 
-        /*Akıllı saatte veri olaylarını kontrole eden döngümüz*/
+        /*Akıllı saatte veri olaylarını kontrol eden döngümüz*/
         for (DataEvent event : dataEvents) {
 
             /*DataEvent.TYPE_CHANGED: Data Layer üzerinde veri değişikliği
-            olduğunda (örneğin data layer’a yeni bir veri eklendiğin) yapılacak
+            olduğunda (örneğin data layer’a yeni bir veri eklendiğinde) yapılacak
             işlemleri belirlemede kullanılır.*/
             if (event.getType() == DataEvent.TYPE_CHANGED) {
 
                 /*Verinin path bilgisi alınır ve değişkene atanır.*/
                 String path = event.getDataItem().getUri().getPath();
 
-                /*Path bilgisi /wearable_data ise, akıllı telefondan metin
+                /*Path bilgisi /wearable_data ise, akıllı saatten metin
                 gönderildiği anlaşılır.*/
                 if (path.equalsIgnoreCase("/wearable_data")) {
 
@@ -38,24 +38,24 @@ public class ListenerService extends WearableListenerService {
                     nesnesine atarız*/
                     DataMap dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
 
-                    /*Yeni bir intent oluşturduk. Bu intent ile NameActivity
-                    isimli etkinlik başlatılacaktır.*/
+                    /*Yeni bir intent oluşturduk. Bu intent ile MainActivity
+                    isimli activity başlatılacaktır.*/
                     Intent i = new Intent(this, MainActivity.class);
 
                     /*Aldığımız DataMap verisini intent içerisine ekleriz.
                     DataMap doğrudan eklenemediği için toBundle() metodu ile
-                    veri Bundle nesnesine dönüştürülür. NameActivity isimli
-                    etkinlikte veriyi almak için “datamap” key değerini kullanırız.*/
+                    veri Bundle nesnesine dönüştürülür. MainActivity isimli
+                    activityde veriyi almak için “datamap” key değerini kullanırız.*/
                     i.putExtra("data", dataMap.toBundle());
 
-                    /*Etkinlik için bayrak tanımladık. Her veri değişiminde
-                    etkinlik yeniden başlatılır ve gelen yeni veriyi kullanıcıya
+                    /*Activity için bayrak tanımladık. Her veri değişiminde
+                    activity yeniden başlatılır ve gelen yeni veriyi kullanıcıya
                     gösterir FLAG_ACTIVITY_CLEAR_TASK: Çalışan bir
                     görev varsa temizlemeyi sağlar. FLAG_ACTIVITY_NEW_
-                    TASK: Etkinliği yeni bir görev içinde başlatır.*/
+                    TASK: Activityyi yeni bir görev içinde başlatır.*/
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                    /*Etkinlik başlatılır.*/
+                    /*Activity başlatılır.*/
                     startActivity(i);
                 }
 
